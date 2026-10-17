@@ -63,7 +63,7 @@ let passives = [
 {n:"불굴의 성좌",en:"Unbroken Constellation",type:"생존 패시브",desc:["HP 30% 미만 도달 시 3초간 받는 피해 20% 감소.","발동 쿨타임 90초."]},
 {n:"여덟 번째 별",en:"The Eighth Star",type:"상위 패시브",desc:["성좌의 성역 유지 중 자신이 받는 피해 5% 추가 감소.","성역 종료 후 4초간 받는 피해 5% 감소.","두 효과는 중첩되지 않음."]},
 {n:"검의 성흔",en:"Sigil of the Sword",type:"검 성좌의 길 · 패시브",desc:["검 성좌의 길 스킬로 적중시키면 대상에게 성흔 1중첩을 부여할 수 있음. 성흔은 대상별 최대 3중첩, 6초 지속.","성흔이 있는 대상에게 주는 검 성좌의 길 피해가 중첩당 2% 증가. 최대 6%.","성흔 부여는 대상별 1초에 한 번만 발동하며, 별궤의 발도는 별도 규칙에 따라 적용."]},
-{n:"유성의 박동",en:"Meteor Rhythm",type:"검 성좌의 길 · 공격 패시브",desc:["검 성좌의 길 스킬 적중 시 5초간 공격력 2% 증가. 최대 4중첩.","중첩은 지속시간이 갱신되며, 최대 공격력 증가량은 8%.","같은 스킬의 다단히트는 시전 1회당 최대 1중첩만 부여."]},
+{n:"유성의 박동",en:"Meteor Rhythm",type:"검 성좌의 길 · 공격/유지력 패시브",desc:["검 성좌의 길 스킬 적중 시 5초간 공격력 2% 증가. 최대 4중첩.","중첩은 지속시간이 갱신되며, 최대 공격력 증가량은 8%.","같은 스킬의 다단히트는 시전 1회당 최대 1중첩만 부여.","검 성좌의 길 스킬로 준 최종 피해량의 3%만큼 HP를 회복한다. 한 번의 스킬 시전당 최대 1회 발동하며, 다단히트는 첫 적중 시에만 회복을 계산한다.","보스 등 단일 대상에게도 동일하게 적용되며, 회복량은 최대 HP를 초과하지 않는다. 보호막과 중첩되지 않는 직접 회복 효과다."]},
 {n:"별빛 수확",en:"Starlight Reaping",type:"검 성좌의 길 · 자원 패시브",desc:["성흔이 있는 적에게 검 성좌의 길 스킬로 피해를 주면 MP 3 회복.","대상별 내부 쿨타임 2초. 한 번의 다단히트 스킬은 회복을 최대 1회만 발동.","최대 MP를 초과해 회복하지 않음."]},
 {n:"개기식의 일격",en:"Eclipse Strike",type:"검 성좌의 길 · 치명타 패시브",desc:["성흔 3중첩 대상에게 주는 검 성좌의 길 스킬의 치명타 확률 8%p 증가.","치명타 피해량 자체는 증가하지 않음.","성흔이 소모되면 해당 보너스도 즉시 사라짐."]}
 ];
@@ -81,7 +81,7 @@ function loadSaved(){try{const d=JSON.parse(localStorage.getItem('astralGuardian
  for(const s of activeSkills){if(s.n==="수호와 단죄"){s.n="쌍성개벽";s.en="Twin Stars: Genesis";s.type="공용 스킬 · 성좌 전환";s.cd="내부 쿨타임 12시간";s.desc=["방패 성좌의 길과 검 성좌의 길을 전환한다.","전환 시 선택한 성좌의 스킬 목록과 전투 특성이 적용된다.","성좌 전환 후 12시간 동안 다시 사용할 수 없다. 내부 쿨타임은 전환 시점부터 계산한다.","별도의 피해·보호 효과는 없으며, 성좌 전환 기능만 수행한다."];}}
  for(const s of activeSkills){if(s.n==="천구 절단"){s.n="성좌파쇄";s.en="Constellation Breaker";}if(s.n==="종말성 참격"){s.n="종성멸천";s.en="Astral Extinction";}if(s.n==="쌍성개벽"){s.type="공용 스킬 · 성좌 전환";s.cd="내부 쿨타임 12시간";s.desc=["방패 성좌의 길과 검 성좌의 길을 전환한다.","전환 시 선택한 성좌의 스킬 목록과 전투 특성이 적용된다.","성좌 전환 후 12시간 동안 다시 사용할 수 없다. 내부 쿨타임은 전환 시점부터 계산한다.","별도의 피해·보호 효과는 없으며, 성좌 전환 기능만 수행한다."];}}
  for(const s of defaultActive.filter(x=>(x.type||'').includes('검 성좌의 길'))){if(!activeSkills.some(x=>x.n===s.n))activeSkills.push(JSON.parse(JSON.stringify(s)));}
- for(const s of defaultPassives.filter(x=>(x.type||'').includes('검 성좌의 길'))){if(!passives.some(x=>x.n===s.n))passives.push(JSON.parse(JSON.stringify(s)));}
+ for(const s of defaultPassives.filter(x=>(x.type||'').includes('검 성좌의 길'))){if(!passives.some(x=>x.n===s.n))passives.push(JSON.parse(JSON.stringify(s)));}\n // 유성의 박동의 유지력 효과를 기존 저장 데이터에도 반영\n for(const s of passives){if(s.n==="유성의 박동"){s.type="검 성좌의 길 · 공격/유지력 패시브";s.desc=["검 성좌의 길 스킬 적중 시 5초간 공격력 2% 증가. 최대 4중첩.","중첩은 지속시간이 갱신되며, 최대 공격력 증가량은 8%.","같은 스킬의 다단히트는 시전 1회당 최대 1중첩만 부여.","검 성좌의 길 스킬로 준 최종 피해량의 3%만큼 HP를 회복한다. 한 번의 스킬 시전당 최대 1회 발동하며, 다단히트는 첫 적중 시에만 회복을 계산한다.","보스 등 단일 대상에게도 동일하게 적용되며, 회복량은 최대 HP를 초과하지 않는다. 보호막과 중첩되지 않는 직접 회복 효과다."];}}
  saveData();
  }}catch(e){}}
 function saveData(){try{localStorage.setItem('astralGuardianCustomData',JSON.stringify({activeSkills,passives,rules}));}catch(e){}}
