@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>별수호자 · 스킬 아카이브</title>
+<style>
+:root{--bg:#080e1b;--panel:#101b2e;--panel2:#14233b;--line:#2b4263;--text:#edf4ff;--muted:#9fb2d0;--gold:#e7c778;--blue:#78baff;--violet:#b6a0ff;--green:#8de0c0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#203b62 0%,var(--bg) 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}
+.wrap{max-width:1060px;margin:auto;padding:28px 18px 60px}.hero{display:flex;align-items:center;gap:18px;padding:24px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(120deg,#142643dd,#0c1425ee);box-shadow:0 18px 50px #0005}
+.emblem{width:76px;height:76px;border-radius:18px;display:grid;place-items:center;font-size:38px;color:var(--gold);background:linear-gradient(145deg,#263e60,#10192c);border:1px solid #526d91;flex-shrink:0}
+h1{font-size:clamp(24px,4vw,36px);margin:0;letter-spacing:.02em}.sub{color:var(--muted);margin:4px 0 0}.stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.pill{border:1px solid #385274;border-radius:99px;padding:4px 10px;color:#d9e7ff;font-size:12px;background:#14233b}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 16px}.tab{border:1px solid var(--line);background:#0e192b;color:var(--muted);padding:10px 15px;border-radius:10px;cursor:pointer;font:inherit}.tab.active{background:#203958;color:#fff;border-color:#6a8db9;box-shadow:inset 0 -2px var(--gold)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:0 0 14px}.hint{color:var(--muted);font-size:13px}.btn{border:1px solid #54769e;background:#203957;color:white;padding:9px 13px;border-radius:9px;cursor:pointer;font:inherit}.btn.primary{background:#d6b86e;color:#171b24;border-color:#f1d993;font-weight:700}.btn:hover,.tab:hover{filter:brightness(1.15)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}.card{background:linear-gradient(160deg,#13213a,#0d1728);border:1px solid var(--line);border-radius:14px;padding:17px;min-width:0}.card h2{font-size:17px;margin:0 0 4px}.en{color:var(--muted);font-size:12px}.meta{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.tag{font-size:11px;border-radius:6px;padding:3px 7px;background:#203653;color:#cfe3ff;border:1px solid #385575}.tag.gold{color:var(--gold);background:#342c1d;border-color:#68542b}.card ul{padding-left:18px;margin:9px 0 0}.card li{margin:4px 0}.card p{margin:8px 0}.section-title{margin:22px 0 10px;font-size:19px}.empty{color:var(--muted);padding:20px}.fieldgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:12px;color:var(--muted)}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px;background:#07101e;color:var(--text);font:inherit}.field textarea{min-height:160px;resize:vertical}.formactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.btn.danger{background:#49252c;border-color:#84434c}.savednote{color:var(--green);font-size:12px;margin-top:8px}.promptbox{width:100%;min-height:340px;background:#07101e;color:#dceaff;border:1px solid var(--line);border-radius:12px;padding:15px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;resize:vertical}.notice{font-size:12px;color:var(--muted);margin-top:10px}.importfile{display:none}.prompt-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.footer{margin-top:24px;color:#7f94b5;font-size:12px;text-align:center}
+@media(max-width:600px){.fieldgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.wrap{padding:16px 12px 40px}.hero{padding:17px;align-items:flex-start}.emblem{width:56px;height:56px;font-size:28px}.tab{flex:1;padding:9px 8px;font-size:13px}.toolbar{align-items:flex-start}.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="emblem">✦</div>
+    <div>
+      <h1>별수호자 <span style="color:var(--gold)">Astral Guardian</span></h1>
+      <p class="sub">별의 힘으로 전열을 지키고, 운명을 반격으로 되돌리는 수호자</p>
+      <div class="stats"><span class="pill">최대 MP 500</span><span class="pill">방어 · 보호 · 제어</span><span class="pill">축적형 반격</span></div>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="스킬 탭">
+    <button class="tab active" data-tab="active">액티브 스킬</button>
+    <button class="tab" data-tab="passive">패시브</button>
+    <button class="tab" data-tab="rules">자원·규칙</button>
+    <button class="tab" data-tab="edit">스킬 편집</button>
+    <button class="tab" data-tab="add">스킬 추가</button>
+    <button class="tab" data-tab="prompt">AI 프롬프트</button>
+  </nav>
+  <div class="toolbar">
+    <span class="hint" id="hint">스킬을 눌러 세부 설정을 확인하는 대신, 필요한 정보를 한눈에 볼 수 있습니다.</span>
+    <button class="btn primary" id="copyCurrent">현재 탭 내용 복사</button>
+  </div>
+  <main id="content"></main>
+  <div class="footer">ASTRAL ARCHIVE · 별수호자 스킬 설정 문서</div>
+</div>
+<script>
+let activeSkills = [
+{n:"성좌의 성역",en:"Sanctuary of Constellation",lv:"Lv.3",type:"액티브 · 영역 전개",mp:80,cd:"120초",desc:["방패를 대지에 내리꽂아 반경 8m에 10초간 성역 전개.","영역 내 아군: 받는 피해 20% 감소, 초당 최대 HP의 2% 회복.","영역 내 적: 이동 속도 30%, 공격 속도 20% 감소 및 중심 방향으로 끌림.","성역 유지 중 별빛의 수호·부동의 별자리 방어 효과 1.25배 증가."],gold:true},
+{n:"별빛의 수호",en:"Astral Aegis",lv:"Lv.5 MAX",type:"액티브 · 방어",mp:35,cd:"12초",desc:["전방에 4초간 성좌의 방패막 전개.","받는 피해 60% 감소.","방어 성공 시 운명의 천칭 에너지 축적량 1.25배 증가."]},
+{n:"성좌의 인력",en:"Astral Attraction",lv:"Lv.5 MAX",type:"액티브 · 도발/제어",mp:30,cd:"18초",desc:["반경 7m 내 적을 4초간 도발하고 시전자 방향으로 끌어당김.","적의 방어력 20% 감소.","보스는 강제 이동·방어력 감소 효과가 저항에 따라 약화되거나 무효화될 수 있음."]},
+{n:"부동의 별자리",en:"Immovable Constellation",lv:"Lv.2",type:"액티브 · 상태이상 면역",mp:35,cd:"24초",desc:["3초간 넉백·기절·넘어짐 등 강제 이동 및 행동 불능 효과에 면역.","발동 직후 STR 30% 증가, 3초간 지속.","피해 및 특수 기믹 판정은 별도 적용."]},
+{n:"운명의 천칭",en:"Scales of Fate",lv:"Lv.2",type:"축적형 반격",mp:25,cd:"방출형",desc:["방패로 방어한 실제 피해량의 50%를 별빛 에너지로 축적.","축적 상한: 최대 HP의 100%에 해당하는 피해량.","다음 무기 공격 적중 시 축적량의 150%를 추가 성좌 피해로 방출.","추가 피해의 30%는 방어력 무시, 치명타 확률 +30%p.","8초 이내 방출하지 않으면 축적량 20% 감소."]},
+{n:"운명을 가로지르는 별",en:"Starbound Intercession",lv:"Lv.5 MAX",type:"액티브 · 패시브 복합",mp:50,cd:"20초 / 대상별 내부 쿨 30초",desc:["패시브—별의 부름: 15m 이내 파티원의 HP가 35% 이하가 되면 자동 돌진해 단일 대상 공격 1회를 대신 받음. 대상에게 최대 HP의 20% 보호막 부여.","액티브—별을 잇는 도약: 지정 아군에게 최대 15m 돌진. 3초간 아군이 받는 단일 대상 공격 피해의 50%를 대신 받고, 아군에게 최대 HP의 15% 보호막 부여.","대신 받는 피해에는 시전자의 방어 및 피해 감소 효과 적용.","즉사기·특수 기믹 피해·광역 공격은 대신 받을 수 없음. 대신 받은 피해로 시전자가 사망할 수 있음."]},
+];
+let passives = [
+{n:"별의 맹세",en:"Oath of the Stars",type:"고유 패시브",desc:["최대 HP 15% 증가.","방어력 10% 증가.","자신이 받는 회복 효과 5% 증가.","방패 장착 시에만 적용."]},
+{n:"수호자의 궤도",en:"Guardian's Orbit",type:"방어 패시브",desc:["5m 이내 아군이 피해를 입으면 별의 인장 획득.","최대 5중첩, 중첩당 받는 피해 1% 감소.","최대 중첩 시 다음 별빛의 수호 소모 MP 10 감소.","중첩 획득 내부 쿨타임 1초."]},
+{n:"별빛의 저울",en:"Astral Balance",type:"자원 패시브",desc:["별빛의 수호로 방어 시 별빛 에너지 획득량 10% 증가.","운명의 천칭 방출 시 소모 에너지의 5% 회수.","회수량은 축적 상한의 5% 이하."]},
+{n:"불굴의 성좌",en:"Unbroken Constellation",type:"생존 패시브",desc:["HP 30% 미만 도달 시 3초간 받는 피해 20% 감소.","발동 쿨타임 90초."]},
+{n:"여덟 번째 별",en:"The Eighth Star",type:"상위 패시브",desc:["성좌의 성역 유지 중 자신이 받는 피해 5% 추가 감소.","성역 종료 후 4초간 받는 피해 5% 감소.","두 효과는 중첩되지 않음."]}
+];
+let rules = [
+{n:"마나 회복",desc:["최대 MP 500.","기본 MP 회복: 초당 5 MP.","일반 공격 적중 시 MP 3 회복(내부 쿨타임 1초).","방패로 공격 방어 시 MP 5 회복(내부 쿨타임 2초)."]},
+{n:"피해 감소 규칙",desc:["피해 감소 효과는 별도 규칙이 없는 한 곱연산으로 적용해 과도한 중첩을 방지."]},
+{n:"아군 보호 규칙",desc:["운명을 가로지르는 별의 자동·수동 발동은 동일 대상 내부 쿨타임을 공유.","자동 발동 시 여러 아군이 조건을 만족하면 HP 비율이 가장 낮은 아군을 우선 보호.","보호막 흡수 피해는 운명의 천칭 축적량에 포함하지 않음."]}
+];
+
+const defaultActive = JSON.parse(JSON.stringify(activeSkills));
+const defaultPassives = JSON.parse(JSON.stringify(passives));
+function loadSaved(){try{const d=JSON.parse(localStorage.getItem('astralGuardianCustomData')||'null');if(d){activeSkills=d.activeSkills||defaultActive;passives=d.passives||defaultPassives;if(Array.isArray(d.rules))rules=d.rules;}}catch(e){}}
+function saveData(){try{localStorage.setItem('astralGuardianCustomData',JSON.stringify({activeSkills,passives,rules}));}catch(e){}}
+loadSaved();
+function allSkills(){return [...activeSkills.map((x,i)=>({...x,_kind:'active',_idx:i})),...passives.map((x,i)=>({...x,_kind:'passive',_idx:i}))];}
+function field(label,id,value,full=false,tag='input',placeholder=''){const safe=esc(String(value??''));if(tag==='textarea')return `<div class="field ${full?'full':''}"><label for="${id}">${label}</label><textarea id="${id}" placeholder="${esc(placeholder)}">${safe}</textarea></div>`;return `<div class="field ${full?'full':''}"><label for="${id}">${label}</label><input id="${id}" value="${safe}" placeholder="${esc(placeholder)}"></div>`;}
+function editorForm(mode){const items=allSkills();return `<section class="card"><h2>${mode==='edit'?'스킬 정보 편집':'새 스킬 추가'}</h2><p class="en">${mode==='edit'?'기존 스킬을 선택한 뒤 내용을 수정하고 저장하세요.':'액티브 또는 패시브 스킬을 새로 등록하세요.'}</p>${mode==='edit'?`<div class="field" style="margin:12px 0"><label for="editSelect">편집할 스킬</label><select id="editSelect">${items.map(x=>`<option value="${x._kind}:${x._idx}">${x._kind==='active'?'액티브':'패시브'} · ${esc(x.n)}</option>`).join('')}</select></div>`:''}<div id="skillFields"></div><div class="formactions"><button class="btn primary" id="saveSkill">${mode==='edit'?'변경사항 저장':'스킬 추가'}</button>${mode==='edit'?'<button class="btn danger" id="deleteSkill">선택한 스킬 삭제</button>':''}<button class="btn" id="resetCustom">기본 설정으로 초기화</button></div><div id="editorMsg" class="savednote"></div><p class="notice">변경사항은 이 브라우저에 저장됩니다. 다른 기기나 브라우저에는 자동 동기화되지 않습니다.</p></section>`;}
+function fillEditor(mode){
+ const select=document.getElementById('editSelect');
+ function selectedItem(){if(mode==='add')return {n:'',en:'',lv:'Lv.1',type:'액티브',mp:0,cd:'없음',desc:[],_kind:'active',_idx:-1};if(!select||!select.value)return null;const [kind,idx]=select.value.split(':');const obj=(kind==='active'?activeSkills:passives)[Number(idx)];return obj?{...obj,_kind:kind,_idx:Number(idx)}:null;}
+ function paint(){const x=selectedItem();if(!x){document.getElementById('skillFields').innerHTML='<p class="empty">편집할 스킬이 없습니다. 스킬 추가 탭에서 새 스킬을 만들어 주세요.</p>';return;}document.getElementById('skillFields').innerHTML=`<div class="fieldgrid">${field('스킬 이름','fName',x.n)}${field('영문 이름','fEn',x.en||'')}${field('종류 / 분류 (액티브 또는 패시브 포함)','fType',x.type||'액티브')}${field('레벨','fLv',x.lv||'')}${field('MP 소모량 (패시브는 비워도 됨)','fMp',x.mp??'')}${field('쿨타임','fCd',x.cd||'')}${field('효과 (한 줄에 하나씩)','fDesc',(x.desc||[]).join('\\n'),true,'textarea','효과를 한 줄씩 입력하세요.')}</div>`;}
+ if(select)select.addEventListener('change',paint);paint();
+ document.getElementById('saveSkill').onclick=()=>{const old=selectedItem();const name=document.getElementById('fName')?.value.trim();if(!name){document.getElementById('editorMsg').textContent='스킬 이름을 입력해주세요.';return;}const obj={n:name,en:document.getElementById('fEn').value.trim(),type:document.getElementById('fType').value.trim(),lv:document.getElementById('fLv').value.trim(),desc:document.getElementById('fDesc').value.split('\\n').map(x=>x.trim()).filter(Boolean)};const mp=document.getElementById('fMp').value.trim();if(mp!=='')obj.mp=Number(mp)||0;obj.cd=document.getElementById('fCd').value.trim();if(mode==='add'){const kind=obj.type.toLowerCase().includes('패시브')?'passive':'active';(kind==='active'?activeSkills:passives).push(obj);}else{if(!old)return;(old._kind==='active'?activeSkills:passives)[old._idx]=obj;}saveData();render(mode);fillEditor(mode);const msg=document.getElementById('editorMsg');if(msg)msg.textContent=mode==='add'?'새 스킬을 추가하고 저장했습니다.':'수정사항을 저장했습니다.';};
+ const del=document.getElementById('deleteSkill');if(del)del.onclick=()=>{const x=selectedItem();if(!x)return;if(!confirm(`"${x.n}" 스킬을 삭제할까요?`))return;(x._kind==='active'?activeSkills:passives).splice(x._idx,1);saveData();render('edit');fillEditor('edit');};
+ document.getElementById('resetCustom').onclick=()=>{if(!confirm('모든 사용자 수정사항을 지우고 기본 스킬로 복원할까요?'))return;activeSkills=JSON.parse(JSON.stringify(defaultActive));passives=JSON.parse(JSON.stringify(defaultPassives));saveData();render(mode);fillEditor(mode);};
+}
+function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function card(item,skill=false){return `<article class="card"><h2>${skill?'✦ ':''}${esc(item.n)}</h2><div class="en">${esc(item.en||'')}</div><div class="meta">${item.lv?`<span class="tag">${esc(item.lv)}</span>`:''}<span class="tag">${esc(item.type||'')}</span>${item.mp!==undefined?`<span class="tag">MP ${item.mp}</span>`:''}${item.cd?`<span class="tag gold">쿨타임 ${esc(item.cd)}</span>`:''}</div><ul>${item.desc.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></article>`}
+function textForTab(tab){
+ if(tab==='active')return '【별수호자 액티브 스킬】\\n'+activeSkills.map(s=>`${s.n} [${s.lv}] — MP ${s.mp}, 쿨타임 ${s.cd}\\n${s.desc.map(x=>'• '+x).join('\\n')}`).join('\\n\\n');
+ if(tab==='passive')return '【별수호자 패시브】\\n'+passives.map(s=>`${s.n} (${s.en})\\n${s.desc.map(x=>'• '+x).join('\\n')}`).join('\\n\\n');
+ if(tab==='rules')return '【별수호자 자원·규칙】\\n최대 MP 500\\n'+rules.map(s=>`${s.n}\\n${s.desc.map(x=>'• '+x).join('\\n')}`).join('\\n\\n');
+ return `【AI 캐릭터 스킬 프롬프트: 별수호자】\\n직업: 별수호자(Astral Guardian). 최대 MP 500. 전열 방어·아군 보호·군중 제어·축적형 반격 특화.\\n\\n액티브 스킬:\\n${activeSkills.map(s=>`- ${s.n} [${s.lv}]: MP ${s.mp}, 쿨타임 ${s.cd}. ${s.desc.join(' ')}`).join('\\n')}\\n\\n패시브:\\n${passives.map(s=>`- ${s.n}: ${s.desc.join(' ')}`).join('\\n')}\\n\\n자원·전투 규칙:\\n${rules.map(s=>`${s.n}: ${s.desc.join(' ')}`).join('\\n')}\\n\\n규칙: 수치와 쿨타임을 임의로 변경하지 말 것. 보호 효과의 대상별 내부 쿨타임을 준수할 것. 즉사기·특수 기믹·광역 공격은 운명을 가로지르는 별로 대신 받을 수 없음. 피해 감소는 별도 규칙이 없는 한 곱연산.`;
+}
+function buildConfig(){
+ return {
+  schema:"astral-guardian-config",
+  schemaVersion:1,
+  title:"별수호자 (Astral Guardian)",
+  exportedAt:new Date().toISOString(),
+  activeSkills:JSON.parse(JSON.stringify(activeSkills)),
+  passives:JSON.parse(JSON.stringify(passives)),
+  rules:JSON.parse(JSON.stringify(rules))
+ };
+}
+function shortPrompt(){
+ return `별수호자(Astral Guardian)의 설정을 첨부한 JSON 파일 기준으로 사용해 줘.\\n\\n지시사항:\\n- 첨부 파일의 액티브 스킬, 패시브, 자원 및 전투 규칙을 기준 설정으로 삼을 것.\\n- 스킬명, 수치, MP 소모량, 쿨타임, 지속시간, 발동 조건과 예외 규칙을 임의로 바꾸거나 누락하지 말 것.\\n- 질문에 답할 때 설정에 없는 내용은 추측이라고 명시하고, 기존 설정과 새 제안을 구분할 것.\\n- 설정 파일과 이 지시문이 충돌하면 설정 파일의 구체적인 규칙을 우선할 것.\\n\\n먼저 파일을 읽고 설정을 이해한 뒤, 이해 여부와 핵심 역할만 간단히 확인해 줘.`;
+}
+function downloadConfig(){
+ const data=JSON.stringify(buildConfig(),null,2);
+ const blob=new Blob([data],{type:'application/json;charset=utf-8'});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');a.href=url;a.download='별수호자_설정.json';
+ document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+ toast('최신 설정 JSON을 내보냈습니다.');
+}
+function importConfigFile(file){
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const d=JSON.parse(String(reader.result||''));
+   if(!d||d.schema!=='astral-guardian-config'||!Array.isArray(d.activeSkills)||!Array.isArray(d.passives)||!Array.isArray(d.rules))throw new Error('형식이 맞지 않습니다.');
+   if(!d.activeSkills.every(x=>x&&typeof x.n==='string'&&Array.isArray(x.desc))||!d.passives.every(x=>x&&typeof x.n==='string'&&Array.isArray(x.desc)))throw new Error('스킬 데이터 형식이 올바르지 않습니다.');
+   if(!confirm('불러오면 현재 브라우저의 액티브·패시브 설정이 파일 내용으로 교체됩니다. 계속할까요?'))return;
+   activeSkills=d.activeSkills;passives=d.passives;rules=d.rules;
+   saveData();
+   render('active');
+   toast('설정을 불러왔습니다.');
+  }catch(e){alert('설정 파일을 불러오지 못했습니다. 별수호자 사이트에서 내보낸 JSON 파일인지 확인해 주세요.\\n'+e.message);}
+ };
+ reader.readAsText(file);
+}
+function render(tab){
+ const c=document.getElementById('content'); document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+ document.getElementById('hint').textContent=tab==='prompt'?'아래 프롬프트를 복사해 다른 AI의 캐릭터 설정·시스템 지침에 붙여 넣으세요.':tab==='rules'?'MP 회복과 공통 전투 규칙':tab==='passive'?'별수호자 고유·성장 패시브':'스킬별 비용, 쿨타임, 효과';
+ if(tab==='active')c.innerHTML=`<div class="cards">${activeSkills.map(s=>card(s,true)).join('')}</div>`;
+ if(tab==='passive')c.innerHTML=`<div class="cards">${passives.map(s=>card(s)).join('')}</div>`;
+ if(tab==='rules')c.innerHTML=`<div class="cards">${rules.map(s=>card(s)).join('')}</div>`;
+ if(tab==='edit'){c.innerHTML=editorForm('edit');fillEditor('edit');}
+ if(tab==='add'){c.innerHTML=editorForm('add');fillEditor('add');}
+ if(tab==='prompt')c.innerHTML=`<section class="card"><h2>AI 연동 · 설정 파일</h2><p>긴 스킬 설명을 매번 복사하지 말고, 최신 설정을 JSON 파일로 내보낸 뒤 다른 AI 채팅에 첨부하세요.</p><div class="prompt-actions"><button class="btn primary" id="exportConfig">최신 설정 JSON 다운로드</button><button class="btn" id="importConfig">설정 JSON 불러오기</button><input class="importfile" type="file" id="configFile" accept=".json,application/json"></div><p class="notice">JSON에는 현재 저장된 액티브 스킬, 패시브, 자원·전투 규칙이 포함됩니다. 불러오기는 현재 액티브·패시브 설정을 교체합니다.</p><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><h2>AI에 복사할 짧은 지시문</h2><p class="en">먼저 JSON을 다운로드하고 AI 대화에 첨부한 다음, 아래 짧은 지시문을 복사해 함께 보내세요.</p><textarea class="promptbox" id="prompt" spellcheck="false" style="min-height:210px">${shortPrompt()}</textarea><div class="prompt-actions"><button class="btn primary" id="copyPrompt">짧은 프롬프트 복사</button><button class="btn" id="copyFullPrompt">전체 설정 프롬프트 복사</button></div><div class="notice">사이트 자체의 HTML 파일을 첨부하는 것보다 JSON 설정 파일을 첨부하는 편이 간단합니다. AI가 첨부 파일을 읽을 수 있는지는 사용하는 서비스에 따라 다릅니다.</div></section>`;
+ document.getElementById('copyCurrent').onclick=()=>copyText(textForTab(tab));
+ const cp=document.getElementById('copyPrompt'); if(cp)cp.onclick=()=>copyText(document.getElementById('prompt').value);
+ const full=document.getElementById('copyFullPrompt'); if(full)full.onclick=()=>copyText(textForTab('prompt'));
+ const ex=document.getElementById('exportConfig'); if(ex)ex.onclick=downloadConfig;
+ const im=document.getElementById('importConfig'), fi=document.getElementById('configFile');
+ if(im&&fi){im.onclick=()=>fi.click();fi.onchange=()=>{importConfigFile(fi.files&&fi.files[0]);fi.value='';};}
+}
+async function copyText(t){try{await navigator.clipboard.writeText(t);toast('복사했습니다.')}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('복사했습니다.');}}
+function toast(s){let old=document.getElementById('toast');if(old)old.remove();let d=document.createElement('div');d.id='toast';d.textContent=s;d.style.cssText='position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#e7c778;color:#111827;padding:10px 16px;border-radius:10px;font-weight:700;box-shadow:0 5px 24px #0008;z-index:10';document.body.appendChild(d);setTimeout(()=>d.remove(),1800)}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>render(b.dataset.tab)));
+render('active');
+</script>
+</body>
+</html>
