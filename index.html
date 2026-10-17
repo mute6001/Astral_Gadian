@@ -34,6 +34,7 @@ h1{font-size:clamp(24px,4vw,36px);margin:0;letter-spacing:.02em}.sub{color:var(-
     <button class="tab" data-tab="edit">스킬 편집</button>
     <button class="tab" data-tab="add">스킬 추가</button>
     <button class="tab" data-tab="prompt">AI 프롬프트</button>
+    <button class="tab" data-tab="summary">AI용 요약 출력</button>
   </nav>
   <div class="toolbar">
     <span class="hint" id="hint">스킬을 눌러 세부 설정을 확인하는 대신, 필요한 정보를 한눈에 볼 수 있습니다.</span>
@@ -89,6 +90,32 @@ function textForTab(tab){
  if(tab==='rules')return '【별수호자 자원·규칙】\\n최대 MP 500\\n'+rules.map(s=>`${s.n}\\n${s.desc.map(x=>'• '+x).join('\\n')}`).join('\\n\\n');
  return `【AI 캐릭터 스킬 프롬프트: 별수호자】\\n직업: 별수호자(Astral Guardian). 최대 MP 500. 전열 방어·아군 보호·군중 제어·축적형 반격 특화.\\n\\n액티브 스킬:\\n${activeSkills.map(s=>`- ${s.n} [${s.lv}]: MP ${s.mp}, 쿨타임 ${s.cd}. ${s.desc.join(' ')}`).join('\\n')}\\n\\n패시브:\\n${passives.map(s=>`- ${s.n}: ${s.desc.join(' ')}`).join('\\n')}\\n\\n자원·전투 규칙:\\n${rules.map(s=>`${s.n}: ${s.desc.join(' ')}`).join('\\n')}\\n\\n규칙: 수치와 쿨타임을 임의로 변경하지 말 것. 보호 효과의 대상별 내부 쿨타임을 준수할 것. 즉사기·특수 기믹·광역 공격은 운명을 가로지르는 별로 대신 받을 수 없음. 피해 감소는 별도 규칙이 없는 한 곱연산.`;
 }
+function aiSummary(){
+ const line = s => (s.desc||[]).map(x=>x.replace(/\\s+/g,' ').trim()).filter(Boolean).join(' / ');
+ const active = activeSkills.map(s=>`[액티브] ${s.n} | MP ${s.mp===undefined?'미기재':s.mp} | 쿨타임 ${s.cd||'미기재'} | ${line(s)}`).join('\\n');
+ const passive = passives.map(s=>`[패시브] ${s.n} | MP 소모 없음(패시브) | 쿨타임/내부 쿨타임: ${((s.desc||[]).filter(x=>/쿨타임|내부 쿨/i.test(x)).join(', '))||'별도 기재 없음'} | ${line(s)}`).join('\\n');
+ const ruleText = rules.map(s=>`[공통 규칙] ${s.n}: ${line(s)}`).join('\\n');
+ return `별수호자(Astral Guardian) — AI용 핵심 설정 요약
+최대 MP: 500
+역할: 전열 방어 / 아군 보호 / 군중 제어 / 축적형 반격
+주의: 아래 수치와 조건을 임의로 변경하지 말 것. 명시되지 않은 정보는 추측하지 말고 '설정에 미기재'라고 답할 것.
+
+=== 액티브 스킬 ===
+${active}
+
+=== 패시브 ===
+${passive}
+
+=== 자원 및 공통 전투 규칙 ===
+${ruleText}`;
+}
+function downloadSummary(){
+ const blob=new Blob([aiSummary()],{type:'text/plain;charset=utf-8'});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');a.href=url;a.download='별수호자_AI용_핵심요약.txt';
+ document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+ toast('AI용 핵심 요약 TXT를 다운로드했습니다.');
+}
 function buildConfig(){
  return {
   schema:"astral-guardian-config",
@@ -130,14 +157,17 @@ function importConfigFile(file){
 }
 function render(tab){
  const c=document.getElementById('content'); document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
- document.getElementById('hint').textContent=tab==='prompt'?'아래 프롬프트를 복사해 다른 AI의 캐릭터 설정·시스템 지침에 붙여 넣으세요.':tab==='rules'?'MP 회복과 공통 전투 규칙':tab==='passive'?'별수호자 고유·성장 패시브':'스킬별 비용, 쿨타임, 효과';
+ document.getElementById('hint').textContent=tab==='summary'?'AI가 읽기 쉽도록 스킬명·MP·쿨타임·핵심 수치만 텍스트로 정리합니다.':tab==='prompt'?'아래 프롬프트를 복사해 다른 AI의 캐릭터 설정·시스템 지침에 붙여 넣으세요.':tab==='rules'?'MP 회복과 공통 전투 규칙':tab==='passive'?'별수호자 고유·성장 패시브':'스킬별 비용, 쿨타임, 효과';
  if(tab==='active')c.innerHTML=`<div class="cards">${activeSkills.map(s=>card(s,true)).join('')}</div>`;
  if(tab==='passive')c.innerHTML=`<div class="cards">${passives.map(s=>card(s)).join('')}</div>`;
  if(tab==='rules')c.innerHTML=`<div class="cards">${rules.map(s=>card(s)).join('')}</div>`;
  if(tab==='edit'){c.innerHTML=editorForm('edit');fillEditor('edit');}
  if(tab==='add'){c.innerHTML=editorForm('add');fillEditor('add');}
+ if(tab==='summary')c.innerHTML=`<section class="card"><h2>AI용 핵심 요약</h2><p>스킬 이름, MP 소모, 쿨타임, 핵심 효과와 수치만 한 줄씩 정리합니다. 이 탭에서 복사하거나 TXT 파일로 내려받아 AI 채팅에 붙여 넣으세요.</p><textarea class="promptbox" id="summaryText" spellcheck="false" style="min-height:420px">${esc(aiSummary())}</textarea><div class="prompt-actions"><button class="btn primary" id="copySummary">요약 복사</button><button class="btn" id="downloadSummary">TXT 파일 다운로드</button></div><p class="notice">현재 브라우저에 저장된 최신 스킬 설정을 반영합니다. 패시브의 MP 소모는 없다고 표시하며, 별도 쿨타임이 기재되지 않은 경우 임의로 만들지 않습니다.</p></section>`;
  if(tab==='prompt')c.innerHTML=`<section class="card"><h2>AI 연동 · 설정 파일</h2><p>긴 스킬 설명을 매번 복사하지 말고, 최신 설정을 JSON 파일로 내보낸 뒤 다른 AI 채팅에 첨부하세요.</p><div class="prompt-actions"><button class="btn primary" id="exportConfig">최신 설정 JSON 다운로드</button><button class="btn" id="importConfig">설정 JSON 불러오기</button><input class="importfile" type="file" id="configFile" accept=".json,application/json"></div><p class="notice">JSON에는 현재 저장된 액티브 스킬, 패시브, 자원·전투 규칙이 포함됩니다. 불러오기는 현재 액티브·패시브 설정을 교체합니다.</p><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><h2>AI에 복사할 짧은 지시문</h2><p class="en">먼저 JSON을 다운로드하고 AI 대화에 첨부한 다음, 아래 짧은 지시문을 복사해 함께 보내세요.</p><textarea class="promptbox" id="prompt" spellcheck="false" style="min-height:210px">${shortPrompt()}</textarea><div class="prompt-actions"><button class="btn primary" id="copyPrompt">짧은 프롬프트 복사</button><button class="btn" id="copyFullPrompt">전체 설정 프롬프트 복사</button></div><div class="notice">사이트 자체의 HTML 파일을 첨부하는 것보다 JSON 설정 파일을 첨부하는 편이 간단합니다. AI가 첨부 파일을 읽을 수 있는지는 사용하는 서비스에 따라 다릅니다.</div></section>`;
  document.getElementById('copyCurrent').onclick=()=>copyText(textForTab(tab));
+ const cs=document.getElementById('copySummary'); if(cs)cs.onclick=()=>copyText(document.getElementById('summaryText').value);
+ const ds=document.getElementById('downloadSummary'); if(ds)ds.onclick=downloadSummary;
  const cp=document.getElementById('copyPrompt'); if(cp)cp.onclick=()=>copyText(document.getElementById('prompt').value);
  const full=document.getElementById('copyFullPrompt'); if(full)full.onclick=()=>copyText(textForTab('prompt'));
  const ex=document.getElementById('exportConfig'); if(ex)ex.onclick=downloadConfig;
