@@ -222,7 +222,8 @@ function render(tab){
   skills:skillPath==='shield'?'방패 성좌: 방어·보호·제어·반격에 특화된 스킬': '검 성좌: 성흔·연계·약점 공략·폭딜에 특화된 스킬',
   rules:'MP 회복과 공통 전투 규칙',
   manage:'스킬을 편집하거나 새 스킬을 등록합니다. 변경사항은 이 브라우저에 저장됩니다.',
-  ai:aiMode==='summary'?'AI가 읽기 쉬운 핵심 수치 요약을 복사하거나 TXT로 저장합니다.':'설정 JSON을 내보내거나 불러오고, AI에 전달할 지시문을 복사합니다.'
+  ai:aiMode==='summary'?'AI가 읽기 쉬운 핵심 수치 요약을 복사하거나 TXT로 저장합니다.':'설정 JSON을 내보내거나 불러오고, AI에 전달할 지시문을 복사합니다.',
+  character:characterTab==='stats'?'캐릭터 능력치와 기본 스탯을 기록합니다.':'장비 슬롯을 선택해 장비 세부 정보를 확인하고 편집합니다.'
  };
  document.getElementById('hint').textContent=hints[tab]||'별수호자 설정';
  if(tab==='skills'){
@@ -241,6 +242,7 @@ function render(tab){
   bindInnerTabs('manage',v=>{manageMode=v;render('manage')});
   fillEditor(manageMode);
  }
+ if(tab==='character'){renderCharacter();}
  if(tab==='ai'){
   const aiTabs=innerTabs([['summary','핵심 요약 출력'],['prompt','설정 파일·프롬프트']],aiMode,'aimode');
   let aiContent='';
@@ -254,6 +256,7 @@ function render(tab){
   else if(tab==='rules')copyText(textForTab('rules'));
   else if(tab==='manage')copyText('스킬 관리 화면입니다. 복사할 스킬 목록은 성좌별 스킬 탭에서 선택하세요.');
   else if(tab==='ai')copyText(aiMode==='summary'?aiSummary():document.getElementById('prompt')?.value||shortPrompt());
+  else if(tab==='character')copyText(characterTab==='stats'?JSON.stringify(characterData.stats,null,2):JSON.stringify(characterData.equipment,null,2));
  };
  const cs=document.getElementById('copySummary'); if(cs)cs.onclick=()=>copyText(document.getElementById('summaryText').value);
  const ds=document.getElementById('downloadSummary'); if(ds)ds.onclick=downloadSummary;
