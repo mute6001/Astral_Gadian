@@ -54,7 +54,7 @@ let activeSkills = [
 {n:"유성 관통",en:"Meteor Pierce",lv:"Lv.2",type:"검 성좌의 길 · 액티브 · 관통",mp:45,cd:"20초",desc:["별빛을 검 끝에 집중해 직선으로 찌름. 경로상의 적에게 공격력의 220% 피해.","대상의 방어력을 15% 무시.","성흔이 1중첩 이상인 대상에게 적중하면 추가로 공격력의 40% 피해. 추가 피해는 대상별 1회만 적용."]},
 {n:"성좌파쇄",en:"Constellation Breaker",lv:"Lv.3",type:"검 성좌의 길 · 액티브 · 마무리",mp:60,cd:"28초",desc:["단일 대상에게 공격력의 300% 피해를 주고 대상의 성흔을 모두 소모.","소모한 성흔 1중첩마다 피해가 10% 증가. 최대 3중첩, 최대 피해 배율은 공격력의 390%.","성흔이 없더라도 기본 피해는 적용됨."]},
 {n:"종성멸천",en:"Astral Extinction",lv:"Lv.5 MAX",type:"검 성좌의 길 · 액티브 · 필살기",mp:90,cd:"60초",desc:["짧게 힘을 모은 뒤 단일 대상에게 공격력의 450% 성좌 피해를 줌.","대상에게 성흔이 있으면 성흔을 모두 소모하고, 소모한 중첩마다 피해가 8% 증가. 최대 3중첩, 최대 피해 배율은 공격력의 558%.","시전 중 군중 제어에 적중하면 공격이 취소될 수 있으며, 취소 시 MP의 50%를 돌려받음."]},
-{n:"쌍성개벽",en:"Twin Stars: Genesis",lv:"Lv.1 · MAX",type:"공통 · 성좌 전환",mp:0,cd:"전환형",desc:["툴팁: 방패 성좌의 길과 검 성좌의 길을 전환한다.","전환 시 현재 선택한 성좌의 스킬 목록과 전투 특성이 적용된다.","별도의 피해·보호 효과는 없으며, 성좌 전환 기능만 수행한다."]},
+{n:"쌍성개벽",en:"Twin Stars: Genesis",lv:"Lv.1 · MAX",type:"공용 스킬 · 성좌 전환",mp:0,cd:"내부 쿨타임 12시간",desc:["방패 성좌의 길과 검 성좌의 길을 전환한다.","전환 시 선택한 성좌의 스킬 목록과 전투 특성이 적용된다.","성좌 전환 후 12시간 동안 다시 사용할 수 없다. 내부 쿨타임은 전환 시점부터 계산한다.","별도의 피해·보호 효과는 없으며, 성좌 전환 기능만 수행한다."]},
 ];
 let passives = [
 {n:"별의 맹세",en:"Oath of the Stars",type:"고유 패시브",desc:["최대 HP 15% 증가.","방어력 10% 증가.","자신이 받는 회복 효과 5% 증가.","방패 장착 시에만 적용."]},
@@ -78,8 +78,8 @@ const defaultPassives = JSON.parse(JSON.stringify(passives));
 function loadSaved(){try{const d=JSON.parse(localStorage.getItem('astralGuardianCustomData')||'null');if(d){activeSkills=d.activeSkills||JSON.parse(JSON.stringify(defaultActive));passives=d.passives||JSON.parse(JSON.stringify(defaultPassives));if(Array.isArray(d.rules))rules=d.rules;
  // 기존 브라우저 저장 데이터에도 검 성좌의 길 기본 스킬을 추가하되, 이미 존재하는 항목/사용자 수정 내용은 유지
  // 성좌 전환 스킬의 이름 변경을 기존 브라우저 저장 데이터에도 반영
- for(const s of activeSkills){if(s.n==="수호와 단죄"){s.n="쌍성개벽";s.en="Twin Stars: Genesis";}}
- for(const s of activeSkills){if(s.n==="천구 절단"){s.n="성좌파쇄";s.en="Constellation Breaker";}if(s.n==="종말성 참격"){s.n="종성멸천";s.en="Astral Extinction";}}
+ for(const s of activeSkills){if(s.n==="수호와 단죄"){s.n="쌍성개벽";s.en="Twin Stars: Genesis";s.type="공용 스킬 · 성좌 전환";s.cd="내부 쿨타임 12시간";s.desc=["방패 성좌의 길과 검 성좌의 길을 전환한다.","전환 시 선택한 성좌의 스킬 목록과 전투 특성이 적용된다.","성좌 전환 후 12시간 동안 다시 사용할 수 없다. 내부 쿨타임은 전환 시점부터 계산한다.","별도의 피해·보호 효과는 없으며, 성좌 전환 기능만 수행한다."];}}
+ for(const s of activeSkills){if(s.n==="천구 절단"){s.n="성좌파쇄";s.en="Constellation Breaker";}if(s.n==="종말성 참격"){s.n="종성멸천";s.en="Astral Extinction";}if(s.n==="쌍성개벽"){s.type="공용 스킬 · 성좌 전환";s.cd="내부 쿨타임 12시간";s.desc=["방패 성좌의 길과 검 성좌의 길을 전환한다.","전환 시 선택한 성좌의 스킬 목록과 전투 특성이 적용된다.","성좌 전환 후 12시간 동안 다시 사용할 수 없다. 내부 쿨타임은 전환 시점부터 계산한다.","별도의 피해·보호 효과는 없으며, 성좌 전환 기능만 수행한다."];}}
  for(const s of defaultActive.filter(x=>(x.type||'').includes('검 성좌의 길'))){if(!activeSkills.some(x=>x.n===s.n))activeSkills.push(JSON.parse(JSON.stringify(s)));}
  for(const s of defaultPassives.filter(x=>(x.type||'').includes('검 성좌의 길'))){if(!passives.some(x=>x.n===s.n))passives.push(JSON.parse(JSON.stringify(s)));}
  saveData();
@@ -212,7 +212,7 @@ function renderCharacter(){
  const clear=document.getElementById('clearEquip');if(clear)clear.onclick=()=>{if(confirm('이 장비 슬롯을 비울까요?')){characterData.equipment[selectedEquip]=blankEquip();saveCharacter();renderCharacter()}};
 }
 let skillPath='shield', skillKind='active', manageMode='edit', aiMode='summary';
-function classifySkill(x){return (x.type||'').includes('검 성좌의 길')?'sword':'shield';}
+function classifySkill(x){const t=x.type||'';if(t.includes('검 성좌의 길'))return 'sword';if(t.includes('공용 스킬')||t.includes('성좌 전환'))return 'common';return 'shield';}
 function innerTabs(items,selected,attribute){return `<div class="subtabs" role="tablist">${items.map(([id,label])=>`<button class="tab subtab ${selected===id?'active':''}" data-${attribute}="${id}">${label}</button>`).join('')}</div>`;}
 function bindInnerTabs(attribute,callback){document.querySelectorAll('[data-'+attribute+']').forEach(b=>b.addEventListener('click',()=>callback(b.dataset[attribute])));}
 function render(tab){
@@ -223,7 +223,7 @@ function render(tab){
  const c=document.getElementById('content');
  document.querySelectorAll('.top-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
  const hints={
-  skills:skillPath==='shield'?'방패 성좌: 방어·보호·제어·반격에 특화된 스킬': '검 성좌: 성흔·연계·약점 공략·폭딜에 특화된 스킬',
+  skills:skillPath==='shield'?'방패 성좌: 방어·보호·제어·반격에 특화된 스킬':skillPath==='sword'?'검 성좌: 성흔·연계·약점 공략·폭딜에 특화된 스킬':'공용 스킬: 성좌 전환 등 두 경로에서 공통으로 사용하는 스킬',
   rules:'MP 회복과 공통 전투 규칙',
   manage:'스킬을 편집하거나 새 스킬을 등록합니다. 변경사항은 이 브라우저에 저장됩니다.',
   ai:aiMode==='summary'?'AI가 읽기 쉬운 핵심 수치 요약을 복사하거나 TXT로 저장합니다.':'설정 JSON을 내보내거나 불러오고, AI에 전달할 지시문을 복사합니다.',
@@ -231,7 +231,7 @@ function render(tab){
  };
  document.getElementById('hint').textContent=hints[tab]||'별수호자 설정';
  if(tab==='skills'){
-  const pathTabs=innerTabs([['shield','🛡 방패 성좌의 길'],['sword','⚔ 검 성좌의 길']],skillPath,'path');
+  const pathTabs=innerTabs([['shield','🛡 방패 성좌의 길'],['sword','⚔ 검 성좌의 길'],['common','✦ 공용 스킬']],skillPath,'path');
   const kindTabs=innerTabs([['active','액티브 스킬'],['passive','패시브']],skillKind,'kind');
   const list=skillKind==='active'?activeSkills:passives;
   const filtered=list.filter(s=>classifySkill(s)===skillPath);
