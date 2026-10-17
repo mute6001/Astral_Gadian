@@ -66,8 +66,8 @@ let passives = [
 {n:"유성의 박동",en:"Meteor Rhythm",type:"검 성좌의 길 · 공격/유지력 패시브",desc:["검 성좌의 길 스킬 적중 시 5초간 공격력 2% 증가. 최대 4중첩.","중첩은 지속시간이 갱신되며, 최대 공격력 증가량은 8%.","같은 스킬의 다단히트는 시전 1회당 최대 1중첩만 부여.","검 성좌의 길 스킬로 준 최종 피해량의 3%만큼 보호막을 생성한다. 한 번의 스킬 시전당 최대 1회 발동하며, 다단히트는 첫 적중 시에만 보호막 생성을 계산한다.","보호막은 5초간 유지되며, 최대 HP의 8%를 초과할 수 없다. 새 보호막 생성 시 기존 보호막과 중첩하지 않고 지속시간을 갱신한다."]},
 {n:"별빛 수확",en:"Starlight Reaping",type:"검 성좌의 길 · 자원 패시브",desc:["성흔이 있는 적에게 검 성좌의 길 스킬로 피해를 주면 MP 3 회복.","대상별 내부 쿨타임 2초. 한 번의 다단히트 스킬은 회복을 최대 1회만 발동.","최대 MP를 초과해 회복하지 않음."]},
 {n:"개기식의 일격",en:"Eclipse Strike",type:"검 성좌의 길 · 치명타 패시브",desc:["성흔 3중첩 대상에게 주는 검 성좌의 길 스킬의 치명타 확률 8%p 증가.","치명타 피해량 자체는 증가하지 않음.","성흔이 소모되면 해당 보너스도 즉시 사라짐."]},
-{n:"각성: 별길의 보폭",en:"Awakening: Astral Stride",type:"방패 성좌의 길 · 각성 패시브",desc:["방패 성좌 스킬 사용 또는 방어 성공 시 이동 속도 12% 증가, 3초 지속.","효과는 중첩되지 않으며 발동 후 8초 동안 재발동하지 않음.","회피 거리·돌진 거리·강제 이동 저항은 증가하지 않음."]},
-{n:"각성: 검성의 잔광",en:"Awakening: Blade Afterglow",type:"검 성좌의 길 · 각성 패시브",desc:["검 성좌 스킬 적중 시 3초간 기본 공격 속도 8% 증가 및 스킬 후딜레이 10% 감소.","효과는 중첩되지 않으며 발동 후 8초 동안 재발동하지 않음.","스킬 쿨타임·시전 준비 시간·군중 제어에 의한 취소에는 영향을 주지 않음."]}
+{n:"각성: 별길의 보폭",en:"Awakening: Astral Stride",type:"방패 성좌의 길 · 각성 패시브",desc:["방패 성좌 스킬 사용 또는 방어 성공 시 발동.","이동 속도 20% 증가, 5초 지속.","방어력 15% 증가, 5초 지속.","효과는 중첩되지 않으며 발동 후 내부 쿨타임 6초.","회피 거리·돌진 거리·강제 이동 저항은 증가하지 않음."]},
+{n:"각성: 검성의 잔광",en:"Awakening: Blade Afterglow",type:"검 성좌의 길 · 각성 패시브",desc:["검 성좌 스킬 적중 시 발동.","기본 공격 속도 15% 증가, 스킬 후딜레이 20% 감소, 공격력 10% 증가, 치명타 피해 15% 증가. 모든 효과는 5초 지속.","효과는 중첩되지 않으며 발동 후 내부 쿨타임 6초.","스킬 쿨타임·시전 준비 시간·군중 제어에 의한 취소에는 영향을 주지 않음."]}
 ];
 let rules = [
 {n:"마나 회복",desc:["최대 MP 500.","기본 MP 회복: 초당 5 MP.","일반 공격 적중 시 MP 3 회복(내부 쿨타임 1초).","방패로 공격 방어 시 MP 5 회복(내부 쿨타임 2초)."]},
@@ -86,6 +86,7 @@ function loadSaved(){try{const d=JSON.parse(localStorage.getItem('astralGuardian
  for(const s of defaultActive.filter(x=>(x.type||'').includes('공용 스킬')||(x.type||'').includes('성좌 전환'))){if(!activeSkills.some(x=>x.n===s.n))activeSkills.push(JSON.parse(JSON.stringify(s)));}
  for(const s of defaultPassives.filter(x=>(x.type||'').includes('검 성좌의 길'))){if(!passives.some(x=>x.n===s.n))passives.push(JSON.parse(JSON.stringify(s)));}
  for(const s of defaultPassives.filter(x=>(x.type||'').includes('각성 패시브'))){if(!passives.some(x=>x.n===s.n))passives.push(JSON.parse(JSON.stringify(s)));}
+ for(const s of passives){const d=defaultPassives.find(x=>x.n===s.n&&(x.type||'').includes('각성 패시브'));if(d){s.en=d.en;s.type=d.type;s.desc=JSON.parse(JSON.stringify(d.desc));}}
  // 유성의 박동의 유지력 효과를 기존 저장 데이터에도 반영
  for(const s of passives){if(s.n==="유성의 박동"){s.type="검 성좌의 길 · 공격/유지력 패시브";s.desc=["검 성좌의 길 스킬 적중 시 5초간 공격력 2% 증가. 최대 4중첩.","중첩은 지속시간이 갱신되며, 최대 공격력 증가량은 8%.","같은 스킬의 다단히트는 시전 1회당 최대 1중첩만 부여.","검 성좌의 길 스킬로 준 최종 피해량의 3%만큼 보호막을 생성한다. 한 번의 스킬 시전당 최대 1회 발동하며, 다단히트는 첫 적중 시에만 보호막 생성을 계산한다.","보호막은 5초간 유지되며, 최대 HP의 8%를 초과할 수 없다. 새 보호막 생성 시 기존 보호막과 중첩하지 않고 지속시간을 갱신한다."];}}
  saveData();
