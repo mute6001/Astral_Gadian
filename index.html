@@ -54,7 +54,7 @@ let activeSkills = [
 {n:"유성 관통",en:"Meteor Pierce",lv:"Lv.2",type:"검 성좌의 길 · 액티브 · 관통",mp:45,cd:"20초",desc:["별빛을 검 끝에 집중해 직선으로 찌름. 경로상의 적에게 공격력의 220% 피해.","대상의 방어력을 15% 무시.","성흔이 1중첩 이상인 대상에게 적중하면 추가로 공격력의 40% 피해. 추가 피해는 대상별 1회만 적용."]},
 {n:"천구 절단",en:"Celestial Severance",lv:"Lv.3",type:"검 성좌의 길 · 액티브 · 마무리",mp:60,cd:"28초",desc:["단일 대상에게 공격력의 300% 피해를 주고 대상의 성흔을 모두 소모.","소모한 성흔 1중첩마다 피해가 10% 증가. 최대 3중첩, 최대 피해 배율은 공격력의 390%.","성흔이 없더라도 기본 피해는 적용됨."]},
 {n:"종말성 참격",en:"Eschaton Starfall",lv:"Lv.5 MAX",type:"검 성좌의 길 · 액티브 · 필살기",mp:90,cd:"60초",desc:["짧게 힘을 모은 뒤 단일 대상에게 공격력의 450% 성좌 피해를 줌.","대상에게 성흔이 있으면 성흔을 모두 소모하고, 소모한 중첩마다 피해가 8% 증가. 최대 3중첩, 최대 피해 배율은 공격력의 558%.","시전 중 군중 제어에 적중하면 공격이 취소될 수 있으며, 취소 시 MP의 50%를 돌려받음."]},
-{n:"수호와 단죄",en:"Aegis and Judgment",lv:"Lv.1 · MAX",type:"공통 · 성좌 전환",mp:0,cd:"전환형",desc:["툴팁: 방패 성좌의 길과 검 성좌의 길을 전환한다.","전환 시 현재 선택한 성좌의 스킬 목록과 전투 특성이 적용된다.","별도의 피해·보호 효과는 없으며, 성좌 전환 기능만 수행한다."]},
+{n:"쌍성개벽",en:"Twin Stars: Genesis",lv:"Lv.1 · MAX",type:"공통 · 성좌 전환",mp:0,cd:"전환형",desc:["툴팁: 방패 성좌의 길과 검 성좌의 길을 전환한다.","전환 시 현재 선택한 성좌의 스킬 목록과 전투 특성이 적용된다.","별도의 피해·보호 효과는 없으며, 성좌 전환 기능만 수행한다."]},
 ];
 let passives = [
 {n:"별의 맹세",en:"Oath of the Stars",type:"고유 패시브",desc:["최대 HP 15% 증가.","방어력 10% 증가.","자신이 받는 회복 효과 5% 증가.","방패 장착 시에만 적용."]},
@@ -77,6 +77,8 @@ const defaultActive = JSON.parse(JSON.stringify(activeSkills));
 const defaultPassives = JSON.parse(JSON.stringify(passives));
 function loadSaved(){try{const d=JSON.parse(localStorage.getItem('astralGuardianCustomData')||'null');if(d){activeSkills=d.activeSkills||JSON.parse(JSON.stringify(defaultActive));passives=d.passives||JSON.parse(JSON.stringify(defaultPassives));if(Array.isArray(d.rules))rules=d.rules;
  // 기존 브라우저 저장 데이터에도 검 성좌의 길 기본 스킬을 추가하되, 이미 존재하는 항목/사용자 수정 내용은 유지
+ // 성좌 전환 스킬의 이름 변경을 기존 브라우저 저장 데이터에도 반영
+ for(const s of activeSkills){if(s.n==="수호와 단죄"){s.n="쌍성개벽";s.en="Twin Stars: Genesis";}}
  for(const s of defaultActive.filter(x=>(x.type||'').includes('검 성좌의 길'))){if(!activeSkills.some(x=>x.n===s.n))activeSkills.push(JSON.parse(JSON.stringify(s)));}
  for(const s of defaultPassives.filter(x=>(x.type||'').includes('검 성좌의 길'))){if(!passives.some(x=>x.n===s.n))passives.push(JSON.parse(JSON.stringify(s)));}
  saveData();
